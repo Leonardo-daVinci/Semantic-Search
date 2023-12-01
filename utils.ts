@@ -9,7 +9,7 @@ import { timeout } from "./config"
 export const createPinconeIndex =async (
     client, indexName, vectorDImension
 ) => {
-    console.log('Checking "${indexName}"');
+    console.log(`Checking "${indexName}"`);
 
     // Check if the index exists. If not, we create it
     const existingIndexes = await client.listIndexes();
@@ -29,7 +29,7 @@ export const createPinconeIndex =async (
         await new Promise((resolve)=> setTimeout(resolve, timeout));
 
     }else{
-        console.log('"${indexName}" already exists');
+        console.log(`"${indexName}" already exists`);
     }
     
 }
@@ -41,7 +41,7 @@ export const updatePinecone =async (
     for(const doc of docs){
         const index = client.Index(indexName);
 
-        console.log('Processing document : ${doc.metadata.source}');
+        console.log(`Processing document : ${doc.metadata.source}`);
         const txtPath = doc.metadata.source; //path on local file system
         const text = doc.pageContent; // Actual text of the document to be stored in the database
 
@@ -64,7 +64,7 @@ export const updatePinecone =async (
             const chunk = chunks[ idx];
             
             const vector = {
-                id: '${txtPath}_${idx}',
+                id:`${txtPath}_${idx}`,
                 values: embeddingArrays[idx],
                 metadata: {
                     ...chunk.metadata,
@@ -110,7 +110,7 @@ export const queryPinecone =async (
         },
     });
 
-    console.log('Found ${queryResponse.matches.length} matches'); // should be 10, because that's what we specified
+    console.log(`Found ${queryResponse.matches.length} matches`); // should be 10, because that's what we specified
 
     if (queryResponse.matches.length){
         const llm = new OpenAI({});
@@ -124,7 +124,7 @@ export const queryPinecone =async (
             question: question,
         });
         
-        console.log('Answer: ${result.text}');
+        console.log(`Answer: ${result.text}`);
         return result.text 
          
     }else{
